@@ -24,17 +24,18 @@ class Runner:
 
     def __call__(self, i):
         sampler = Sampler(i, self.output_partition_count)
+        print(f"partition id: sampler.output_partition_id")
         reader = self.reader_builder(sampler)
         writer = self.writer_builder(i)
         mapper = self.mapper_builder()
         logger = self.logger_builder(i)
-        logger.start()
         iterator = reader.__iter__()
         while True:
             start_time = time.perf_counter()
             try:
                 batch = iterator.__next__()
             except StopIteration:
+                print("stopping iteration")
                 break
             read_duration = time.perf_counter() - start_time
             start_time = time.perf_counter()
@@ -44,7 +45,7 @@ class Runner:
             writer(embeddings)
             write_duration = time.perf_counter() - start_time
             total_duration = read_duration + inference_duration + write_duration
-            logger(
+            print(
                 {
                     "read_duration": read_duration,
                     "inference_duration": inference_duration,
@@ -55,5 +56,4 @@ class Runner:
                     else batch["text_tokens"].shape[0],
                 }
             )
-        logger.end()
         writer.flush()

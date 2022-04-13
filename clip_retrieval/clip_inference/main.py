@@ -34,7 +34,7 @@ def main(
     wds_number_file_per_input_file=10000,
     output_partition_count=None,
     wandb_project="clip_retrieval",
-    enable_wandb=False,
+    enable_wandb=True,
 ):
     if input_format == "webdataset":
         input_dataset = list(braceexpand(input_dataset))
