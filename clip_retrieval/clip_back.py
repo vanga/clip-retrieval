@@ -435,8 +435,8 @@ class KnnService(Resource):
         text_input = json_data.get("text", None)
         image_input = json_data.get("image", None)
         image_url_input = json_data.get("image_url", None)
-        modality = json_data["modality"]
-        num_images = json_data["num_images"]
+        modality = json_data.get("modality", "image")
+        num_images = json_data.get("num_images", 20)
         num_result_ids = json_data.get("num_result_ids", num_images)
         indice_name = json_data["indice_name"]
         use_mclip = json_data.get("use_mclip", False)
@@ -800,6 +800,7 @@ def load_clip_index(clip_options):
 
     metadata_provider, ivf_old_to_new_mapping = load_metadata_provider(
         clip_options.indice_folder,
+        clip_options.metadata_folder,
         clip_options.enable_hdf5,
         clip_options.reorder_metadata_by_ivf_index,
         image_index,
@@ -873,6 +874,7 @@ def clip_back(
         indices_paths=indices_paths,
         clip_options=ClipOptions(
             indice_folder="",
+            metadata_folder=metadata_folder,
             clip_model=clip_model,
             enable_hdf5=enable_hdf5,
             enable_faiss_memory_mapping=enable_faiss_memory_mapping,
